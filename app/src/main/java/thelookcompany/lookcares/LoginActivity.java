@@ -1,5 +1,6 @@
 package thelookcompany.lookcares;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -25,14 +26,16 @@ public class LoginActivity extends AppCompatActivity {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (txt_username.getText().toString().isEmpty()) {
-                    txt_username.setError("Cannot be blank");
-                    return;
-                }
-                if (txt_password.getText().toString().isEmpty()) {
-                    txt_password.setError("Cannot be blank");
-                    return;
-                }
+//                if (txt_username.getText().toString().isEmpty()) {
+//                    txt_username.setError("Cannot be blank");
+//                    return;
+//                }
+//                if (txt_password.getText().toString().isEmpty()) {
+//                    txt_password.setError("Cannot be blank");
+//                    return;
+//                }
+                Intent intent = new Intent(LoginActivity.this, LocationSelectionActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -47,5 +50,9 @@ public class LoginActivity extends AppCompatActivity {
                     btn_rememberme.setImageResource(R.drawable.checkbox_square);
             }
         });
+    }
+    @Override
+    public void onBackPressed() {
+        // Do Here what ever you want do on back press;
     }
 }
