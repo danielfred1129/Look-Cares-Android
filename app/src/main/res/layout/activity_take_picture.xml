@@ -11,6 +11,10 @@
     android:background="#000"
     tools:context="thelookcompany.lookcares.TakePictureActivity">
     <ImageView
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/logo"/>
+    <ImageView
         android:id="@+id/img_photo"
         android:layout_width="300dp"
         android:layout_height="300dp"

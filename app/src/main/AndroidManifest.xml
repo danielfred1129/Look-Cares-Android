@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="thelookcompany.lookcares">
 
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="21" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
 
@@ -26,8 +32,10 @@
         <activity
             android:name=".FrameSelectionActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".InStoreLocationSelection" />
-        <activity android:name=".TakePictureActivity"></activity>
+        <activity android:name=".InStoreLocationSelection"
+            android:screenOrientation="portrait" />
+        <activity android:name=".TakePictureActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

@@ -19,10 +19,12 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
+
         <ImageView
             android:layout_width="170dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/logo"/>
+            android:src="@drawable/logo" />
+
         <FrameLayout
             android:id="@+id/frame_dialog"
             android:layout_width="match_parent"
@@ -48,25 +50,36 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:weightSum="100">
                         <Button
                             android:id="@+id/btn_nfc_tap_frame"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_weight="30"
                             android:layout_height="wrap_content"
+                            android:background="@drawable/tap_btn_back"
                             android:text="NFC TAP"
                             android:textSize="12sp"
-                            android:maxLines="1" />
+                            android:textStyle="bold"
+                            android:maxLines="1"
+                            android:elevation="0dp" />
+
                         <Button
                             android:id="@+id/btn_bar_code_frame"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_weight="40"
                             android:layout_height="wrap_content"
+                            android:background="#000"
                             android:text="BAR CODE READER"
                             android:textSize="12sp"
                             android:maxLines="1"/>
+
                         <Button
                             android:id="@+id/btn_text_input_frame"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_weight="30"
                             android:layout_height="wrap_content"
+                            android:background="#000"
                             android:text="TEXT INPUT"
                             android:textSize="12sp"
                             android:maxLines="1"/>
@@ -84,16 +97,6 @@
                     android:background="#000"
                     android:gravity="center">
                 </FrameLayout>
-
-                <TextView
-                    android:id="@+id/lbl_serial_number"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:background="#333333"
-                    android:text="Serial Number"
-                    android:textSize="15sp"/>
-
                 <Button
                     android:id="@+id/btn_select_frame"
                     android:layout_marginTop="20dp"

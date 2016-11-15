@@ -1,16 +1,16 @@
 package thelookcompany.lookcares.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import me.dm7.barcodescanner.zbar.Result;
 import me.dm7.barcodescanner.zbar.ZBarScannerView;
-import thelookcompany.lookcares.R;
 
 public class BarCodeReaderFragment extends Fragment implements ZBarScannerView.ResultHandler {
     // TODO: Rename parameter arguments, choose names that match
@@ -72,8 +72,20 @@ public class BarCodeReaderFragment extends Fragment implements ZBarScannerView.R
 
     @Override
     public void handleResult(Result rawResult) {
-        TextView lbl_serial_number = (TextView) getActivity().findViewById(R.id.lbl_serial_number);
-        lbl_serial_number.setText(rawResult.getContents());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Serial Number");
+        builder.setMessage(rawResult.getContents());
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                //TODO
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+//        TextView lbl_serial_number = (TextView) getActivity().findViewById(R.id.lbl_serial_number);
+//        lbl_serial_number.setText(rawResult.getContents());
         // Note:
         // * Wait 2 seconds to resume the preview.
         // * On older devices continuously stopping and resuming camera preview can result in freezing the app.

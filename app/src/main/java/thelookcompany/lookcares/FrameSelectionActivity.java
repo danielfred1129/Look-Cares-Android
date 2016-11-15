@@ -1,6 +1,8 @@
 package thelookcompany.lookcares;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,14 +17,16 @@ import thelookcompany.lookcares.fragments.TextInputFragment;
 
 
 public class FrameSelectionActivity extends AppCompatActivity {
-    public TextView lbl_serial_number;
 
     private Button btn_nfc_tap_frame, btn_bar_code_frame, btn_text_input_frame, btn_select_frame;
     String value;
+    int status = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_frame_selection);
+
+        status = 0;
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -35,21 +39,21 @@ public class FrameSelectionActivity extends AppCompatActivity {
 
             //The key argument here must match that used in the other activity
         }
-        lbl_serial_number = (TextView) findViewById(R.id.lbl_serial_number);
 
         btn_nfc_tap_frame = (Button) findViewById(R.id.btn_nfc_tap_frame);
         btn_nfc_tap_frame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                lbl_serial_number.setVisibility(View.GONE);
+                status = 0;
+                updateTapButtons();
             }
         });
         btn_bar_code_frame = (Button) findViewById(R.id.btn_bar_code_frame);
         btn_bar_code_frame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                lbl_serial_number.setVisibility(View.VISIBLE);
-                lbl_serial_number.setText("Serial Number");
+                status = 1;
+                updateTapButtons();
                 BarCodeReaderFragment fragment = new BarCodeReaderFragment();
                 replaceFragment(fragment);
             }
@@ -58,7 +62,8 @@ public class FrameSelectionActivity extends AppCompatActivity {
         btn_text_input_frame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                lbl_serial_number.setVisibility(View.GONE);
+                status = 2;
+                updateTapButtons();
                 TextInputFragment fragment = new TextInputFragment();
                 replaceFragment(fragment);
             }
@@ -75,6 +80,35 @@ public class FrameSelectionActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+    private void updateTapButtons() {
+        if (status == 0)
+        {
+            btn_nfc_tap_frame.setTypeface(null, Typeface.BOLD);
+            btn_bar_code_frame.setTypeface(null, Typeface.NORMAL);
+            btn_text_input_frame.setTypeface(null, Typeface.NORMAL);
+            btn_nfc_tap_frame.setBackgroundResource(R.drawable.tap_btn_back);
+            btn_bar_code_frame.setBackgroundColor(Color.BLACK);
+            btn_text_input_frame.setBackgroundColor(Color.BLACK);
+        }
+        else if (status == 1)
+        {
+            btn_nfc_tap_frame.setTypeface(null, Typeface.NORMAL);
+            btn_bar_code_frame.setTypeface(null, Typeface.BOLD);
+            btn_text_input_frame.setTypeface(null, Typeface.NORMAL);
+            btn_nfc_tap_frame.setBackgroundColor(Color.BLACK);
+            btn_bar_code_frame.setBackgroundResource(R.drawable.tap_btn_back);
+            btn_text_input_frame.setBackgroundColor(Color.BLACK);
+        }
+        else if (status == 2)
+        {
+            btn_nfc_tap_frame.setTypeface(null, Typeface.NORMAL);
+            btn_bar_code_frame.setTypeface(null, Typeface.NORMAL);
+            btn_text_input_frame.setTypeface(null, Typeface.BOLD);
+            btn_nfc_tap_frame.setBackgroundColor(Color.BLACK);
+            btn_bar_code_frame.setBackgroundColor(Color.BLACK);
+            btn_text_input_frame.setBackgroundResource(R.drawable.tap_btn_back);
+        }
     }
     private void replaceFragment (Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
