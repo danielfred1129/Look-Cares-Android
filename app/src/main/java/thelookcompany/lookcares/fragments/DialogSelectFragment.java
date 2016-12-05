@@ -10,11 +10,23 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.RequestParams;
+
+import org.apache.http.Header;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import thelookcompany.lookcares.Adapters.DialogListAdapter;
 import thelookcompany.lookcares.R;
 import thelookcompany.lookcares.datamodel.DialogListItem;
+import thelookcompany.lookcares.datamodel.UserObject;
+import thelookcompany.lookcares.network.LookCaresResponseHandler;
+import thelookcompany.lookcares.utils.UserUtils;
+import thelookcompany.lookcares.utils.Utils;
 
 public class DialogSelectFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -28,6 +40,10 @@ public class DialogSelectFragment extends Fragment {
 
     private View rootView;
     private DialogListAdapter adapter;
+
+    int selectedID = -1;
+
+    private JSONArray clientArray, locationArray;
 
 
     public DialogSelectFragment() {
@@ -71,6 +87,23 @@ public class DialogSelectFragment extends Fragment {
         btn_select_dialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (selectedID == -1) {
+                    Utils.showAlertWithTitleNoCancel(getActivity(), "Warning", "Please select " + mType);
+                    return;
+                }
+                if (mType.equals("client"))
+                {
+                    try {
+                        String clientKey = clientArray.getJSONObject(selectedID).getString("kLookClient");
+                        UserUtils.storeSelectedClient(getActivity(), clientKey);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else
+                {
+
+                }
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });
@@ -84,7 +117,7 @@ public class DialogSelectFragment extends Fragment {
                 view.setSelected(true);
                 view.setBackgroundColor(Color.rgb(242,242,242));
                 DialogListItem item = (DialogListItem) adapter.getItem(position);
-
+                selectedID = position;
             }
         });
         initializeControl();
@@ -93,13 +126,90 @@ public class DialogSelectFragment extends Fragment {
     private void initializeControl() {
         getListInformation();
     }
+    private void getAllClients() {
+        RequestParams params = new RequestParams();
+        UserObject user = UserUtils.getSession(getActivity());
+        String token = user.getToken();
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.addHeader("Authorization", "base " + token);
+
+        client.get(Utils.BASE_URL + "Clients",new LookCaresResponseHandler(getActivity()) {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+
+                if (response != null) {
+                    try {
+                        clientArray = response.getJSONArray("response");
+                        adapter.clearData();
+                        if (clientArray.length() > 0) {
+                            for (int i = 0; i < clientArray.length(); i++) {
+                                DialogListItem item = new DialogListItem();
+                                JSONObject object = clientArray.getJSONObject(i);
+                                String vcClientName = object.getString("vcClientName");
+                                item.address = vcClientName;
+                                item.img = mType;
+                                adapter.addData(item);
+                            }
+                        }
+                    } catch (JSONException e) {
+                    }
+                }
+            }
+        });
+    }
+
+    private void getLocationsWithClient(String clientKey) {
+        RequestParams params = new RequestParams();
+        UserObject user = UserUtils.getSession(getActivity());
+        String token = user.getToken();
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.addHeader("Authorization", "base " + token);
+
+        client.get(Utils.BASE_URL + "ClientLocations/ByClientKey/" + clientKey,new LookCaresResponseHandler(getActivity()) {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+
+                if (response != null) {
+                    try {
+                        locationArray = response.getJSONArray("response");
+                        adapter.clearData();
+                        if (locationArray.length() > 0) {
+                            for (int i = 0; i < locationArray.length(); i++) {
+                                DialogListItem item = new DialogListItem();
+                                JSONObject object = locationArray.getJSONObject(i);
+                                String vcShipToStateProvince = object.getString("vcShipToStateProvince");
+                                String vcShipToPostal = object.getString("vcShipToPostal");
+                                String vcShipToName = object.getString("vcShipToName");
+                                String vcShipToCountry = object.getString("vcShipToCountry");
+                                String vcShipToContact = object.getString("vcShipToContact");
+                                String vcShipToCity = object.getString("vcShipToCity");
+                                String vcShipToAddress1 = object.getString("vcShipToAddress1");
+                                item.address = vcShipToStateProvince + " " + vcShipToPostal + " " + vcShipToName
+                                        + " " + vcShipToCountry + " " + vcShipToContact + " " + vcShipToCity + " " + vcShipToAddress1;
+                                item.img = mType;
+                                adapter.addData(item);
+                            }
+                        }
+                    } catch (JSONException e) {
+                    }
+                }
+            }
+        });
+    }
     private void getListInformation() {
-        for (int i = 0; i < 10; i++)
+        if (mType.equals("client")) { //if select client
+            getAllClients();
+        }
+        else //if select location
         {
-            DialogListItem item = new DialogListItem();
-            item.address = "abc";
-            item.img = mType;
-            adapter.addData(item);
+            String selectedClientKey = UserUtils.getSelectedClient(getActivity());
+            getLocationsWithClient(selectedClientKey);
         }
     }
 

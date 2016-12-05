@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 
 import thelookcompany.lookcares.fragments.DialogSelectFragment;
+import thelookcompany.lookcares.utils.UserUtils;
+import thelookcompany.lookcares.utils.Utils;
 
 public class LocationSelectionActivity extends AppCompatActivity {
 
@@ -32,11 +34,18 @@ public class LocationSelectionActivity extends AppCompatActivity {
         btn_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DialogSelectFragment fragment = new DialogSelectFragment();
-                Bundle bd = new Bundle();
-                bd.putString("type", "location");
-                fragment.setArguments(bd);
-                replaceFragmentToBackStack(fragment);
+                String clientKey = UserUtils.getSelectedClient(LocationSelectionActivity.this);
+                if (!clientKey.isEmpty()) {
+                    DialogSelectFragment fragment = new DialogSelectFragment();
+                    Bundle bd = new Bundle();
+                    bd.putString("type", "location");
+                    fragment.setArguments(bd);
+                    replaceFragmentToBackStack(fragment);
+                }
+                else
+                {
+                    Utils.showAlertWithTitleNoCancel(LocationSelectionActivity.this, "Warning", "Please select the client");
+                }
             }
         });
         Button btn_select = (Button) findViewById(R.id.btn_select);

@@ -5,11 +5,10 @@
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="21" />
-
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.SET_DEBUG_APP"></uses-permission>
 
     <application
         android:allowBackup="true"
@@ -32,10 +31,13 @@
         <activity
             android:name=".FrameSelectionActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".InStoreLocationSelection"
+        <activity
+            android:name=".InStoreLocationSelection"
             android:screenOrientation="portrait" />
-        <activity android:name=".TakePictureActivity"
+        <activity
+            android:name=".TakePictureActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".RemoveFabricActivity"></activity>
     </application>
 
 </manifest>

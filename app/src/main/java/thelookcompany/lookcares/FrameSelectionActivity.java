@@ -21,12 +21,14 @@ public class FrameSelectionActivity extends AppCompatActivity {
     private Button btn_nfc_tap_frame, btn_bar_code_frame, btn_text_input_frame, btn_select_frame;
     String value;
     int status = 0;
+    boolean installed;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_frame_selection);
 
         status = 0;
+//        installed = true;
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -73,8 +75,13 @@ public class FrameSelectionActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent;
-                if (value.equals("Frame Selection"))
-                    intent = new Intent(FrameSelectionActivity.this, InStoreLocationSelection.class);
+                if (value.equals("FRAME")) {
+                    if (installed) {
+                        intent = new Intent(FrameSelectionActivity.this, RemoveFabricActivity.class);
+                    } else {
+                        intent = new Intent(FrameSelectionActivity.this, InStoreLocationSelection.class);
+                    }
+                }
                 else
                     intent = new Intent(FrameSelectionActivity.this, TakePictureActivity.class);
                 startActivity(intent);
