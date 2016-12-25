@@ -27,6 +27,7 @@ public class RemoveFabricActivity extends AppCompatActivity {
     ImageView img_fabric1, img_fabric2;
     ImageButton btn_chk_fabric1, btn_chk_fabric2;
     String fabricKey1, fabricKey2;
+    Integer stage_status = 0;
     Button btn_remove;
     boolean status_Fabric1 = false, status_Fabric2 = false;
     JSONArray fabrics;
@@ -62,7 +63,7 @@ public class RemoveFabricActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (fabrics.length() == 2 && status_Fabric2 == true &&  status_Fabric1 == true)
                 {
-
+                    stage_status = 2;
                     //Delete first fabric
                     UserObject user = UserUtils.getSession(RemoveFabricActivity.this);
                     String token = user.getToken();
@@ -90,20 +91,22 @@ public class RemoveFabricActivity extends AppCompatActivity {
                 }
                 else if (fabrics.length() == 2 && status_Fabric1 == true)
                 {
-
+                    stage_status = 1;
                     //Delete first fabric
                     deleteFabric(fabricKey1);
                 }
                 else if (fabrics.length() == 2 && status_Fabric2 == true )
                 {
-
+                    stage_status = 1;
                     //Delete first fabric
                     deleteFabric(fabricKey2);
                 }
                 else if (status_Fabric1) {
+                    stage_status = 1;
                     deleteFabric(fabricKey1);
                 }
-                if (status_Fabric2) {
+                else if (status_Fabric2) {
+                    stage_status = 1;
                     deleteFabric(fabricKey2);
                 }
             }
@@ -185,7 +188,7 @@ public class RemoveFabricActivity extends AppCompatActivity {
             {
                 intent = new Intent(RemoveFabricActivity.this, FrameSelectionActivity.class);
                 intent.putExtra("SERIAL_NUMBER_SELECTION_TYPE", "FABRIC");
-                intent.putExtra("FRAME_SIZE", 2);
+                intent.putExtra("FRAME_SIZE", stage_status);
                 startActivity(intent);
             }
             else
