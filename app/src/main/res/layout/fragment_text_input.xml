@@ -26,6 +26,7 @@
             android:background="#333333"
             android:gravity="center">
             <EditText
+                android:id="@+id/txt_input_serial_number"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_width="match_parent"

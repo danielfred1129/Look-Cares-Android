@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import thelookcompany.lookcares.R;
 
@@ -17,6 +18,7 @@ public class TextInputFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private View rootView;
 
     public TextInputFragment() {
         // Required empty public constructor
@@ -53,7 +55,11 @@ public class TextInputFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_text_input, container, false);
+        //Frame Serial Number  : installed : SN09231600100, SN09231600101, uninstalled: SN09231600102
+        //Fabric Serial Number : installed : SN10031600017, uninstalled: SN10031600018
+        rootView = inflater.inflate(R.layout.fragment_text_input, container, false);
+        ((EditText) rootView.findViewById(R.id.txt_input_serial_number)).setText("SN09271600023");
+        return rootView;
     }
 
 }

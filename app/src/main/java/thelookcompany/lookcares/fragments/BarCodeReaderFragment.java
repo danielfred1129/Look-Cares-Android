@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import me.dm7.barcodescanner.zbar.Result;
 import me.dm7.barcodescanner.zbar.ZBarScannerView;
+import thelookcompany.lookcares.utils.UserUtils;
 
 public class BarCodeReaderFragment extends Fragment implements ZBarScannerView.ResultHandler {
     // TODO: Rename parameter arguments, choose names that match
@@ -75,6 +76,8 @@ public class BarCodeReaderFragment extends Fragment implements ZBarScannerView.R
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Serial Number");
         builder.setMessage(rawResult.getContents());
+        UserUtils.storeSelectedBarcode(getActivity(), rawResult.getContents());
+
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 //TODO

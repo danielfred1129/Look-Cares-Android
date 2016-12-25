@@ -32,7 +32,7 @@
                     android:textColor="#000"
                     android:layout_alignParentLeft="true"
                     android:layout_centerInParent="true"
-                    android:id="@+id/textView2" />
+                    android:id="@+id/lbl_dialog_select_title" />
 
                 <Button
                     android:layout_width="wrap_content"
@@ -40,8 +40,8 @@
                     android:background="#fff"
                     android:text="CANCEL"
                     android:textColor="#0077af"
-                    android:layout_alignBaseline="@+id/textView2"
-                    android:layout_alignBottom="@+id/textView2"
+                    android:layout_alignBaseline="@+id/lbl_dialog_select_title"
+                    android:layout_alignBottom="@+id/lbl_dialog_select_title"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
                     android:id="@+id/btn_cancel_dialog" />

@@ -35,7 +35,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"
-                    android:scaleType="fitXY" />
+                    android:scaleType="fitXY"
+                    android:paddingRight="2dp"/>
 
                 <ImageButton
                     android:id="@+id/btn_chk_fabric1"
@@ -46,7 +47,8 @@
                     android:background="#00ffffff"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true" />
+                    android:layout_alignParentStart="true"
+                    android:paddingRight="2dp"/>
             </RelativeLayout>
             <RelativeLayout
                 android:layout_width="0dp"
@@ -57,7 +59,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"
-                    android:scaleType="fitXY" />
+                    android:scaleType="fitXY"
+                    android:paddingLeft="2dp"/>
                 <ImageButton
                     android:id="@+id/btn_chk_fabric2"
                     android:layout_width="match_parent"
@@ -65,7 +68,8 @@
                     android:scaleType="centerInside"
                     android:src="@drawable/chb_rounded_small"
                     android:background="#00ffffff"
-                    android:layout_centerInParent="true" />
+                    android:layout_centerInParent="true"
+                    android:paddingLeft="2dp"/>
             </RelativeLayout>
         </LinearLayout>
     </LinearLayout>

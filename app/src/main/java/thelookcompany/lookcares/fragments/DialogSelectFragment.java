@@ -1,6 +1,5 @@
 package thelookcompany.lookcares.fragments;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
@@ -43,7 +43,13 @@ public class DialogSelectFragment extends Fragment {
 
     int selectedID = -1;
 
-    private JSONArray clientArray, locationArray;
+    private JSONArray resultArray;
+
+    public interface onSelectFragmentListener {
+        public void onClientSelection(String s);
+    }
+
+    onSelectFragmentListener selectFragmentListener;
 
 
     public DialogSelectFragment() {
@@ -75,6 +81,14 @@ public class DialogSelectFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_dialog_select, container, false);
+        TextView lbl_dialog_select_title = (TextView)rootView.findViewById(R.id.lbl_dialog_select_title);
+        if (mType.equals("client"))
+            lbl_dialog_select_title.setText("Select Client");
+        else if (mType.equals(("location")))
+            lbl_dialog_select_title.setText("Select Location");
+        else if (mType.equals("in-store-location"))
+            lbl_dialog_select_title.setText("Select In-Store Location");
+
         Button btn_cancel_dialog = (Button) rootView.findViewById(R.id.btn_cancel_dialog);
         btn_cancel_dialog.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,15 +108,43 @@ public class DialogSelectFragment extends Fragment {
                 if (mType.equals("client"))
                 {
                     try {
-                        String clientKey = clientArray.getJSONObject(selectedID).getString("kLookClient");
-                        UserUtils.storeSelectedClient(getActivity(), clientKey);
+                        String selectedClient = resultArray.getJSONObject(selectedID).toString();
+                        ((Button)getActivity().findViewById(R.id.btn_client)).setText(resultArray.getJSONObject(selectedID).getString("vcClientName"));
+                        UserUtils.storeSelectedClient(getActivity(), selectedClient);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
-                else
+                else if (mType.equals("location"))
                 {
+                    try {
+                        String selectedLocation = resultArray.getJSONObject(selectedID).toString();
+                        JSONObject object = resultArray.getJSONObject(selectedID);
+                        String vcShipToStateProvince = object.getString("vcShipToStateProvince");
+                        String vcShipToPostal = object.getString("vcShipToPostal");
+                        String vcShipToName = object.getString("vcShipToName");
+                        String vcShipToCountry = object.getString("vcShipToCountry");
+                        String vcShipToContact = object.getString("vcShipToContact");
+                        String vcShipToCity = object.getString("vcShipToCity");
+                        String vcShipToAddress1 = object.getString("vcShipToAddress1");
+                        String location = vcShipToStateProvince + " " + vcShipToPostal + " " + vcShipToName
+                                + " " + vcShipToCountry + " " + vcShipToContact + " " + vcShipToCity + " " + vcShipToAddress1;
 
+                        ((Button)getActivity().findViewById(R.id.btn_location)).setText(location);
+                        UserUtils.storeSelectedLocation(getActivity(), selectedLocation);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else if (mType.equals("in-store-location"))
+                {
+                    try {
+                        String selectedStoreLocation = resultArray.getJSONObject(selectedID).toString();
+                        ((Button)getActivity().findViewById(R.id.btn_store_location)).setText(resultArray.getJSONObject(selectedID).getString("vcInStoreLocation"));
+                        UserUtils.storeSelectedStoreLocation(getActivity(), selectedStoreLocation);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
                 getActivity().getSupportFragmentManager().popBackStack();
             }
@@ -114,8 +156,8 @@ public class DialogSelectFragment extends Fragment {
         listview_dialog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                view.setSelected(true);
-                view.setBackgroundColor(Color.rgb(242,242,242));
+//                view.setSelected(true);
+//                view.setBackgroundColor(Color.rgb(242,242,242));
                 DialogListItem item = (DialogListItem) adapter.getItem(position);
                 selectedID = position;
             }
@@ -132,22 +174,27 @@ public class DialogSelectFragment extends Fragment {
         String token = user.getToken();
 
         AsyncHttpClient client = new AsyncHttpClient();
-        client.addHeader("Authorization", "base " + token);
-
+        String authorization = "base " + token;
+        client.addHeader("Authorization", authorization);
+        client.addHeader("Content-Type", "application/json");
+        client.addHeader("Accept", "application/json");
         client.get(Utils.BASE_URL + "Clients",new LookCaresResponseHandler(getActivity()) {
-
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+            }
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 super.onSuccess(statusCode, headers, response);
 
                 if (response != null) {
                     try {
-                        clientArray = response.getJSONArray("response");
+                        resultArray = response;
                         adapter.clearData();
-                        if (clientArray.length() > 0) {
-                            for (int i = 0; i < clientArray.length(); i++) {
+                        if (resultArray.length() > 0) {
+                            for (int i = 0; i < resultArray.length(); i++) {
                                 DialogListItem item = new DialogListItem();
-                                JSONObject object = clientArray.getJSONObject(i);
+                                JSONObject object = resultArray.getJSONObject(i);
                                 String vcClientName = object.getString("vcClientName");
                                 item.address = vcClientName;
                                 item.img = mType;
@@ -172,17 +219,17 @@ public class DialogSelectFragment extends Fragment {
         client.get(Utils.BASE_URL + "ClientLocations/ByClientKey/" + clientKey,new LookCaresResponseHandler(getActivity()) {
 
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 super.onSuccess(statusCode, headers, response);
 
                 if (response != null) {
                     try {
-                        locationArray = response.getJSONArray("response");
+                        resultArray = response;
                         adapter.clearData();
-                        if (locationArray.length() > 0) {
-                            for (int i = 0; i < locationArray.length(); i++) {
+                        if (resultArray.length() > 0) {
+                            for (int i = 0; i < resultArray.length(); i++) {
                                 DialogListItem item = new DialogListItem();
-                                JSONObject object = locationArray.getJSONObject(i);
+                                JSONObject object = resultArray.getJSONObject(i);
                                 String vcShipToStateProvince = object.getString("vcShipToStateProvince");
                                 String vcShipToPostal = object.getString("vcShipToPostal");
                                 String vcShipToName = object.getString("vcShipToName");
@@ -202,14 +249,63 @@ public class DialogSelectFragment extends Fragment {
             }
         });
     }
+    private void getStoreLocations() {
+        RequestParams params = new RequestParams();
+        UserObject user = UserUtils.getSession(getActivity());
+        String token = user.getToken();
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        String authorization = "base " + token;
+        client.addHeader("Authorization", authorization);
+        client.addHeader("Content-Type", "application/json");
+        client.addHeader("Accept", "application/json");
+        client.get(Utils.BASE_URL + "StoreLocations",new LookCaresResponseHandler(getActivity()) {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+            }
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                super.onSuccess(statusCode, headers, response);
+
+                if (response != null) {
+                    try {
+                        adapter.clearData();
+                        resultArray = response;
+                        if (response.length() > 0) {
+                            for (int i = 0; i < response.length(); i++) {
+                                DialogListItem item = new DialogListItem();
+                                JSONObject object = resultArray.getJSONObject(i);
+                                String vcInStoreLocation = object.getString("vcInStoreLocation");
+                                item.address = vcInStoreLocation;
+                                item.img = mType;
+                                adapter.addData(item);
+                            }
+                        }
+                    } catch (JSONException e) {
+                    }
+                }
+            }
+        });
+    }
     private void getListInformation() {
         if (mType.equals("client")) { //if select client
             getAllClients();
         }
-        else //if select location
+        else if (mType.equals("location")) //if select location
         {
-            String selectedClientKey = UserUtils.getSelectedClient(getActivity());
-            getLocationsWithClient(selectedClientKey);
+            String selectedClient = UserUtils.getSelectedClient(getActivity());
+            try {
+                JSONObject json_client = new JSONObject(selectedClient);
+                String selectedClientKey = json_client.getString("kLookClient");
+                getLocationsWithClient(selectedClientKey);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        else if (mType.equals("in-store-location")) // if select in-store-location
+        {
+            getStoreLocations();
         }
     }
 

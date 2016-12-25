@@ -19,6 +19,11 @@ public class UserUtils {
     private static final String REMEMBER_ME = "remember_me";
     private static final String SELECTED_CLIENT = "selected_client";
     private static final String SELECTED_LOCATION = "selected_location";
+    private static final String SELECTED_FRAME = "selected_frame";
+    private static final String INSTALLED_FABRICS = "installed_fabrics";
+    private static final String SELECTED_FABRIC = "selected_fabric";
+    private static final String SELECTED_STORE_LOCATION = "selected_store_location";
+    private static final String SELECTED_BAR_CODE = "selected_bar_code";
     private static final String VALET = "valet";
     private static final String SCHEDULE_DATA = "scheduleData";
     private static final String SELECTED_CATEGORY = "selected_category";
@@ -92,11 +97,39 @@ public class UserUtils {
         String valet = context.getSharedPreferences(APP, Context.MODE_PRIVATE).getString(SELECTED_LOCATION, null);
         return valet;
     }
-    public static void storeValet(Context context, String valet) {
-        context.getSharedPreferences(APP, Context.MODE_PRIVATE).edit().putString(VALET, valet).commit();
+    public static void storeSelectedFrame(Context context, String valet) {
+        context.getSharedPreferences(APP, Context.MODE_PRIVATE).edit().putString(SELECTED_FRAME, valet).commit();
     }
-    public static String getValet(Context context) {
-        String valet = context.getSharedPreferences(APP, Context.MODE_PRIVATE).getString(VALET, null);
+    public static String getSelectedFrame(Context context) {
+        String valet = context.getSharedPreferences(APP, Context.MODE_PRIVATE).getString(SELECTED_FRAME, null);
+        return valet;
+    }
+    public static void storeInstalledFabrics(Context context, String valet) {
+        context.getSharedPreferences(APP, Context.MODE_PRIVATE).edit().putString(INSTALLED_FABRICS, valet).commit();
+    }
+    public static String getInstalledFabrics(Context context) {
+        String valet = context.getSharedPreferences(APP, Context.MODE_PRIVATE).getString(INSTALLED_FABRICS, null);
+        return valet;
+    }
+    public static void storeSelectedFabric(Context context, String valet) {
+        context.getSharedPreferences(APP, Context.MODE_PRIVATE).edit().putString(SELECTED_FABRIC, valet).commit();
+    }
+    public static String getSelectedFabric(Context context) {
+        String valet = context.getSharedPreferences(APP, Context.MODE_PRIVATE).getString(SELECTED_FRAME, null);
+        return valet;
+    }
+    public static void storeSelectedStoreLocation(Context context, String valet) {
+        context.getSharedPreferences(APP, Context.MODE_PRIVATE).edit().putString(SELECTED_STORE_LOCATION, valet).commit();
+    }
+    public static String getSelectedStoreLocation(Context context) {
+        String valet = context.getSharedPreferences(APP, Context.MODE_PRIVATE).getString(SELECTED_STORE_LOCATION, null);
+        return valet;
+    }
+    public static void storeSelectedBarcode(Context context, String valet) {
+        context.getSharedPreferences(APP, Context.MODE_PRIVATE).edit().putString(SELECTED_BAR_CODE, valet).commit();
+    }
+    public static String getSelectedBarcode(Context context) {
+        String valet = context.getSharedPreferences(APP, Context.MODE_PRIVATE).getString(SELECTED_BAR_CODE, null);
         return valet;
     }
     public static void storeScheduleDataArray(Context context, String scheduleString) {

@@ -10,6 +10,10 @@ import android.widget.ImageButton;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
+import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 import org.apache.http.Header;
 import org.json.JSONException;
@@ -56,6 +60,7 @@ public class LoginActivity extends AppCompatActivity {
 
         String str_remember = UserUtils.getRememberMe(LoginActivity.this);
         if (str_remember != null) {
+            btn_rememberme.setImageResource(R.drawable.checkbox);
             UserObject user = UserUtils.getSession(this);
             if (user != null) {
                 txt_username.setText(user.getUserName());
@@ -63,10 +68,21 @@ public class LoginActivity extends AppCompatActivity {
                 onLogin();
             }
         }
+        initImageLoader();
     }
     @Override
     public void onBackPressed() {
         // Do Here what ever you want do on back press;
+    }
+    public void initImageLoader() {
+        ImageLoaderConfiguration.Builder config = new ImageLoaderConfiguration.Builder(getApplicationContext());
+        config.threadPriority(Thread.NORM_PRIORITY - 2);
+        config.denyCacheImageMultipleSizesInMemory();
+        config.diskCacheFileNameGenerator(new Md5FileNameGenerator());
+        config.diskCacheSize(50 * 1024 * 1024); // 50 MiB
+        config.tasksProcessingOrder(QueueProcessingType.LIFO);
+        config.writeDebugLogs(); // Remove for release app
+        ImageLoader.getInstance().init(config.build());
     }
 
     private void onLogin() {
@@ -82,10 +98,8 @@ public class LoginActivity extends AppCompatActivity {
 //        params.put("username", txt_username.getText().toString());
 //        params.put("password", txt_password.getText().toString());
 
-        params.put("username", "custadmin");
-        params.put("password", "p@ssword!");
-
-
+        params.put("username", "installer1");
+        params.put("password", "installer1");
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.post(Utils.BASE_URL + "Auth/Login", params, new LookCaresResponseHandler(this) {

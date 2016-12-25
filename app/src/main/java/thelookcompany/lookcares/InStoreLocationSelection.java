@@ -9,15 +9,23 @@ import android.view.View;
 import android.widget.Button;
 
 import thelookcompany.lookcares.fragments.DialogSelectFragment;
+import thelookcompany.lookcares.utils.Utils;
 
 public class InStoreLocationSelection extends AppCompatActivity {
-
+    int frame_size;
+    private Button btn_store_location;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_in_store_location_selection);
 
-        Button btn_store_location = (Button) findViewById(R.id.btn_store_location);
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            frame_size = extras.getInt("FRAME_SIZE");
+            //The key argument here must match that used in the other activity
+        }
+
+        btn_store_location = (Button) findViewById(R.id.btn_store_location);
         btn_store_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -33,9 +41,17 @@ public class InStoreLocationSelection extends AppCompatActivity {
         btn_select_store.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(InStoreLocationSelection.this, FrameSelectionActivity.class);
-                intent.putExtra("SERIAL_NUMBER_SELECTION_TYPE", "FABRIC");
-                startActivity(intent);
+                String selectedStoreLocation = (String)btn_store_location.getText();
+
+                if (selectedStoreLocation.equals("")) {
+                    Utils.showAlertWithTitleNoCancel(InStoreLocationSelection.this, "Missing", "Please select in-store location.");
+                }
+                else {
+                    Intent intent = new Intent(InStoreLocationSelection.this, FrameSelectionActivity.class);
+                    intent.putExtra("SERIAL_NUMBER_SELECTION_TYPE", "FABRIC");
+                    intent.putExtra("FRAME_SIZE", frame_size);
+                    startActivity(intent);
+                }
             }
         });
     }
