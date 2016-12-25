@@ -86,20 +86,20 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void onLogin() {
-//        if (txt_username.getText().toString().isEmpty()) {
-//            txt_username.setError("Cannot be blank");
-//            return;
-//        }
-//        if (txt_password.getText().toString().isEmpty()) {
-//            txt_password.setError("Cannot be blank");
-//            return;
-//        }
+        if (txt_username.getText().toString().isEmpty()) {
+            txt_username.setError("Cannot be blank");
+            return;
+        }
+        if (txt_password.getText().toString().isEmpty()) {
+            txt_password.setError("Cannot be blank");
+            return;
+        }
         RequestParams params = new RequestParams();
-//        params.put("username", txt_username.getText().toString());
-//        params.put("password", txt_password.getText().toString());
+        params.put("username", txt_username.getText().toString());
+        params.put("password", txt_password.getText().toString());
 
-        params.put("username", "installer1");
-        params.put("password", "installer1");
+//        params.put("username", "installer1");
+//        params.put("password", "installer1");
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.post(Utils.BASE_URL + "Auth/Login", params, new LookCaresResponseHandler(this) {
