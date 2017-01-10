@@ -267,9 +267,18 @@ public class FrameSelectionActivity extends AppCompatActivity {
                         JSONObject objInStoreLocation = new JSONObject(storedInStoreLocation);
 
                         RequestParams params = new RequestParams();
-                        params.put("ClientLocationKey", objLocation.getString("kLookClientCustomer"));
-                        params.put("FrameKey", selectedFrame.getString("kFrame"));
-                        params.put("InStoreLocation", objInStoreLocation.getString("kInStoreLocation"));
+//                        params.put("ClientLocationKey", objLocation.getString("kLookClientCustomer"));
+//                        params.put("FrameKey", selectedFrame.getString("kFrame"));
+//                        params.put("InStoreLocation", objInStoreLocation.getString("vcInStoreLocation"));
+//                        params.put("SerialNumber", serialNumber);
+
+                        String ClientLocationKey = objLocation.getString("kLookClientCustomer");
+                        String FrameKey = selectedFrame.getString("kFrame");
+                        String InStoreLocation = objInStoreLocation.getString("vcInStoreLocation");
+
+                        params.put("ClientLocationKey", ClientLocationKey);
+                        params.put("FrameKey", FrameKey);
+                        params.put("InStoreLocation", InStoreLocation);
                         params.put("SerialNumber", serialNumber);
 
                         UserObject user = UserUtils.getSession(FrameSelectionActivity.this);
@@ -278,8 +287,6 @@ public class FrameSelectionActivity extends AppCompatActivity {
                         AsyncHttpClient client = new AsyncHttpClient();
                         String authorization = "base " + token;
                         client.addHeader("Authorization", authorization);
-                        client.addHeader("Content-Type", "application/json");
-                        client.addHeader("Accept", "application/json");
                         client.post(Utils.BASE_URL + "Frames/Fabric", params, new LookCaresResponseHandler(FrameSelectionActivity.this) {
                             @Override
                             public void onFailure(int statusCode, Header[] headers,	Throwable throwable, JSONObject errorResponse) {

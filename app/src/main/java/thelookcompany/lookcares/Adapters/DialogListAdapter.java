@@ -1,6 +1,7 @@
 package thelookcompany.lookcares.Adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import thelookcompany.lookcares.datamodel.DialogListItem;
 public class DialogListAdapter  extends BaseAdapter {
 
     ArrayList<DialogListItem> listdata;
+    public int selectedPosition = -1;
 
     public DialogListAdapter(ArrayList <DialogListItem> listdata) {
         this.listdata = listdata;
@@ -48,6 +50,10 @@ public class DialogListAdapter  extends BaseAdapter {
         return 0;
     }
 
+    public void setSelected(int position) {
+        selectedPosition = position;
+    }
+
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         View view = convertView;
@@ -70,6 +76,13 @@ public class DialogListAdapter  extends BaseAdapter {
         else if (item.img.equals("location"))
             holder.imgView.setImageResource(R.drawable.pin);
         holder.txtView.setText(item.address);
+        if (selectedPosition == position) {
+            view.setBackgroundColor(Color.rgb(242,242,242));
+        }
+        else
+        {
+            view.setBackgroundColor(Color.WHITE);
+        }
 
         return view;
     }

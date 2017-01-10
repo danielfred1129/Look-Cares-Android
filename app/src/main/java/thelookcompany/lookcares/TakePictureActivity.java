@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import thelookcompany.lookcares.utils.UserUtils;
+
 public class TakePictureActivity extends AppCompatActivity {
 
     private ImageView img_photo;
@@ -32,9 +34,15 @@ public class TakePictureActivity extends AppCompatActivity {
         btn_done_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (img_photo != null) {
+                    postImageToServer();
+                }
                 showAlertForMakeMorechanges();
             }
         });
+    }
+    private void postImageToServer(){
+
     }
     private void showAlertForMakeMorechanges() {
         AlertDialog.Builder builder = new AlertDialog.Builder(TakePictureActivity.this);
@@ -52,6 +60,7 @@ public class TakePictureActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int id) {
                 //TODO
                 dialog.dismiss();
+                UserUtils.storeRememberMe(TakePictureActivity.this, "no");
                 Intent intent = new Intent(TakePictureActivity.this, LoginActivity.class);
                 startActivity(intent);
             }

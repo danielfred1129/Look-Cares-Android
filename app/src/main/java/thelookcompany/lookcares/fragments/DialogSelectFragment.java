@@ -158,8 +158,11 @@ public class DialogSelectFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 //                view.setSelected(true);
 //                view.setBackgroundColor(Color.rgb(242,242,242));
+
                 DialogListItem item = (DialogListItem) adapter.getItem(position);
                 selectedID = position;
+                adapter.setSelected(position);
+                adapter.notifyDataSetChanged();
             }
         });
         initializeControl();

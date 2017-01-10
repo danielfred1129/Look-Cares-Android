@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
@@ -86,20 +87,20 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void onLogin() {
-        if (txt_username.getText().toString().isEmpty()) {
-            txt_username.setError("Cannot be blank");
-            return;
-        }
-        if (txt_password.getText().toString().isEmpty()) {
-            txt_password.setError("Cannot be blank");
-            return;
-        }
+//        if (txt_username.getText().toString().isEmpty()) {
+//            txt_username.setError("Cannot be blank");
+//            return;
+//        }
+//        if (txt_password.getText().toString().isEmpty()) {
+//            txt_password.setError("Cannot be blank");
+//            return;
+//        }
         RequestParams params = new RequestParams();
-        params.put("username", txt_username.getText().toString());
-        params.put("password", txt_password.getText().toString());
+//        params.put("username", txt_username.getText().toString());
+//        params.put("password", txt_password.getText().toString());
 
-//        params.put("username", "installer1");
-//        params.put("password", "installer1");
+        params.put("username", "installer");
+        params.put("password", "installer!");
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.post(Utils.BASE_URL + "Auth/Login", params, new LookCaresResponseHandler(this) {
@@ -127,6 +128,18 @@ public class LoginActivity extends AppCompatActivity {
 
                     } catch (JSONException e) {
                         Utils.showAlert(LoginActivity.this, "Failed to login!");
+                    }
+                }
+            }
+            @Override
+            public void onFailure(int statusCode, Header[] headers,	Throwable throwable, JSONObject errorResponse) {
+                if (errorResponse == null) {
+                    Toast.makeText(LoginActivity.this, "Please check your network status", Toast.LENGTH_LONG).show();
+                } else {
+                    try {
+                        Toast.makeText(LoginActivity.this, errorResponse.getString("message"), Toast.LENGTH_LONG).show();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 }
             }

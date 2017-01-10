@@ -58,7 +58,7 @@ public class TextInputFragment extends Fragment {
         //Frame Serial Number  : installed : SN09231600100, SN09231600101, uninstalled: SN09231600102
         //Fabric Serial Number : installed : SN10031600017, uninstalled: SN10031600018
         rootView = inflater.inflate(R.layout.fragment_text_input, container, false);
-        ((EditText) rootView.findViewById(R.id.txt_input_serial_number)).setText("SN09271600023");
+        ((EditText) rootView.findViewById(R.id.txt_input_serial_number)).setText("SN06281600013");
         return rootView;
     }
 
