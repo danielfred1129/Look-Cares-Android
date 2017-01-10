@@ -58,16 +58,16 @@ public class LoginActivity extends AppCompatActivity {
                     btn_rememberme.setImageResource(R.drawable.checkbox_square);
             }
         });
+        UserObject user = UserUtils.getSession(this);
+        if (user != null) {
+            txt_username.setText(user.getUserName());
+            txt_password.setText(user.getUserPass());
+        }
 
         String str_remember = UserUtils.getRememberMe(LoginActivity.this);
         if (str_remember != null) {
             btn_rememberme.setImageResource(R.drawable.checkbox);
-            UserObject user = UserUtils.getSession(this);
-            if (user != null) {
-                txt_username.setText(user.getUserName());
-                txt_password.setText(user.getUserPass());
-                onLogin();
-            }
+            onLogin();
         }
         initImageLoader();
     }
@@ -87,20 +87,20 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void onLogin() {
-//        if (txt_username.getText().toString().isEmpty()) {
-//            txt_username.setError("Cannot be blank");
-//            return;
-//        }
-//        if (txt_password.getText().toString().isEmpty()) {
-//            txt_password.setError("Cannot be blank");
-//            return;
-//        }
+        if (txt_username.getText().toString().isEmpty()) {
+            txt_username.setError("Cannot be blank");
+            return;
+        }
+        if (txt_password.getText().toString().isEmpty()) {
+            txt_password.setError("Cannot be blank");
+            return;
+        }
         RequestParams params = new RequestParams();
-//        params.put("username", txt_username.getText().toString());
-//        params.put("password", txt_password.getText().toString());
+        params.put("username", txt_username.getText().toString());
+        params.put("password", txt_password.getText().toString());
 
-        params.put("username", "installer");
-        params.put("password", "installer!");
+//        params.put("username", "installer");
+//        params.put("password", "installer!");
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.post(Utils.BASE_URL + "Auth/Login", params, new LookCaresResponseHandler(this) {

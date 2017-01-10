@@ -36,7 +36,7 @@ public class FrameSelectionActivity extends AppCompatActivity {
     int frame_size;
     int status = 0;
     boolean installed;
-    private JSONObject selectedFrame, selectedFabric;
+        private JSONObject selectedFrame, selectedFabric;
     private String serialNumber;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -318,7 +318,7 @@ public class FrameSelectionActivity extends AppCompatActivity {
                                     Intent intent;
                                     if (frame_size == 2) {
                                         intent = new Intent(FrameSelectionActivity.this, FrameSelectionActivity.class);
-                                        intent.putExtra("SERIAL_NUMBER_SELECTION_TYPE", "FBRIC");
+                                        intent.putExtra("SERIAL_NUMBER_SELECTION_TYPE", "FABRIC");
                                         intent.putExtra("FRAME_SIZE", 1);
                                     } else { // == 1
                                         intent = new Intent(FrameSelectionActivity.this, TakePictureActivity.class);

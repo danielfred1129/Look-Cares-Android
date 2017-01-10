@@ -3,6 +3,8 @@ package thelookcompany.lookcares;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -11,12 +13,30 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.RequestParams;
+
+import org.apache.http.Header;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import thelookcompany.lookcares.datamodel.UserObject;
+import thelookcompany.lookcares.network.LookCaresResponseHandler;
 import thelookcompany.lookcares.utils.UserUtils;
+import thelookcompany.lookcares.utils.Utils;
 
 public class TakePictureActivity extends AppCompatActivity {
 
     private ImageView img_photo;
+    private Bitmap photoBMP;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +62,36 @@ public class TakePictureActivity extends AppCompatActivity {
         });
     }
     private void postImageToServer(){
+        RequestParams params = new RequestParams();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        photoBMP.compress(Bitmap.CompressFormat.JPEG, 70, stream);
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        params.put("uploadedfile", new ByteArrayInputStream(stream.toByteArray()), "img_"+timeStamp+".jpg", "image/jpeg");
 
+        String storedFrame = UserUtils.getSelectedFrame(TakePictureActivity.this);
+        try {
+            JSONObject selectedFrame = new JSONObject(storedFrame);
+            String FrameKey = selectedFrame.getString("kFrame");
+            params.put("kFrame", FrameKey);
+            UserObject user = UserUtils.getSession(TakePictureActivity.this);
+            String token = user.getToken();
+
+            AsyncHttpClient client = new AsyncHttpClient();
+            String authorization = "base " + token;
+            client.addHeader("Authorization", authorization);
+            client.post(Utils.BASE_URL + "Frames/Upload", params, new LookCaresResponseHandler(TakePictureActivity.this) {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    super.onSuccess(statusCode, headers, response);
+
+                    if (response != null) {
+                        Toast.makeText(TakePictureActivity.this, "Upload successfully!", Toast.LENGTH_LONG);
+                    }
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
     private void showAlertForMakeMorechanges() {
         AlertDialog.Builder builder = new AlertDialog.Builder(TakePictureActivity.this);
@@ -98,6 +147,11 @@ public class TakePictureActivity extends AppCompatActivity {
                 if(resultCode == RESULT_OK){
                     Uri selectedImage = imageReturnedIntent.getData();
                     img_photo.setImageURI(selectedImage);
+                    try {
+                        photoBMP = BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImage));
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 break;
@@ -105,6 +159,11 @@ public class TakePictureActivity extends AppCompatActivity {
                 if(resultCode == RESULT_OK){
                     Uri selectedImage = imageReturnedIntent.getData();
                     img_photo.setImageURI(selectedImage);
+                    try {
+                        photoBMP = BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImage));
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
         }
