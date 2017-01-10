@@ -9,6 +9,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.loopj.android.http.AsyncHttpClient;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -131,13 +132,15 @@ public class RemoveFabricActivity extends AppCompatActivity {
                 String img_url = fabric1.getString("vcFileName");
                 img_url = "http://files.lookcares.com/files/" + img_url;
                 fabricKey1 = fabric1.getString("kFabric");
-                ImageLoader.getInstance().displayImage(img_url, img_fabric1, options);
+//                ImageLoader.getInstance().displayImage(img_url, img_fabric1, options);
+                Glide.with(this).load(img_url).into(img_fabric1);
 
                 JSONObject fabric2 = fabrics.getJSONObject(1);
                 String img_url2 = fabric2.getString("vcFileName");
                 fabricKey2 = fabric2.getString("kFabric");
                 img_url2 = "http://files.lookcares.com/files/" + img_url2;
-                ImageLoader.getInstance().displayImage(img_url2, img_fabric2, options);
+//                ImageLoader.getInstance().displayImage(img_url2, img_fabric2, options);
+                Glide.with(this).load(img_url2).into(img_fabric2);
             }
         } catch (JSONException e) {
             e.printStackTrace();
