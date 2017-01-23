@@ -36,7 +36,9 @@ import thelookcompany.lookcares.utils.Utils;
 public class TakePictureActivity extends AppCompatActivity {
 
     private ImageView img_photo;
-    private Bitmap photoBMP;
+    private Bitmap photoBMP, mBitmap;
+    private Uri mPicUri;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -146,6 +148,7 @@ public class TakePictureActivity extends AppCompatActivity {
             case 0:
                 if(resultCode == RESULT_OK){
                     Uri selectedImage = imageReturnedIntent.getData();
+                    mPicUri = selectedImage;
                     img_photo.setImageURI(selectedImage);
                     try {
                         photoBMP = BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImage));
@@ -158,6 +161,7 @@ public class TakePictureActivity extends AppCompatActivity {
             case 1:
                 if(resultCode == RESULT_OK){
                     Uri selectedImage = imageReturnedIntent.getData();
+                    mPicUri = selectedImage;
                     img_photo.setImageURI(selectedImage);
                     try {
                         photoBMP = BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImage));
@@ -167,5 +171,29 @@ public class TakePictureActivity extends AppCompatActivity {
                 }
                 break;
         }
+    }
+
+    protected void onResume()
+    {
+        mBitmap = null;
+        try
+        {
+            mBitmap = Bitmap.createBitmap(MediaStore.Images.Media.getBitmap(this.getContentResolver(), mPicUri));
+        }
+        catch(Exception e)
+        {}
+
+        img_photo.setImageBitmap(mBitmap);
+        img_photo.setAdjustViewBounds(true);
+        img_photo.invalidate();
+
+        super.onResume();
+    }
+
+
+    protected void onPause()
+    {
+        mBitmap.recycle();
+        img_photo.setImageBitmap(null);  //in my Edit class
     }
 }

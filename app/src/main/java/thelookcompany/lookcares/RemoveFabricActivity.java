@@ -32,12 +32,14 @@ public class RemoveFabricActivity extends AppCompatActivity {
     Button btn_remove;
     boolean status_Fabric1 = false, status_Fabric2 = false;
     JSONArray fabrics;
+    View rootview;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_remove_fabric);
+
         status_Fabric1 = false;
         status_Fabric2 = false;
         img_fabric1 = (ImageView) findViewById(R.id.img_fabric1);
@@ -66,29 +68,7 @@ public class RemoveFabricActivity extends AppCompatActivity {
                 {
                     stage_status = 2;
                     //Delete first fabric
-                    UserObject user = UserUtils.getSession(RemoveFabricActivity.this);
-                    String token = user.getToken();
-
-                    AsyncHttpClient client = new AsyncHttpClient();
-                    String authorization = "base " + token;
-                    client.addHeader("Authorization", authorization);
-                    client.addHeader("Content-Type", "application/json");
-                    client.addHeader("Accept", "application/json");
-                    client.delete(Utils.BASE_URL + "Frames/Fabric/" + fabricKey1, new LookCaresResponseHandler(RemoveFabricActivity.this) {
-                        @Override
-                        public void onFailure(int statusCode, Header[] headers,	String responseString, Throwable throwable) {
-                            if (statusCode == 200) {
-                                deleteFabric(fabricKey2);
-                            }
-                            else
-                                Toast.makeText(RemoveFabricActivity.this, "Please check your network status", Toast.LENGTH_LONG).show();
-                        }
-                        @Override
-                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                            super.onSuccess(statusCode, headers, response);
-                            deleteFabric(fabricKey2);
-                        }
-                    });
+                    deleteFabric(fabricKey2);
                 }
                 else if (fabrics.length() == 2 && status_Fabric1 == true)
                 {
@@ -103,6 +83,7 @@ public class RemoveFabricActivity extends AppCompatActivity {
                     deleteFabric(fabricKey2);
                 }
                 else if (status_Fabric1) {
+
                     stage_status = 1;
                     deleteFabric(fabricKey1);
                 }

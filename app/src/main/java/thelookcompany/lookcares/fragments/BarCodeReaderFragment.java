@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import me.dm7.barcodescanner.zbar.Result;
 import me.dm7.barcodescanner.zbar.ZBarScannerView;
+import thelookcompany.lookcares.FrameSelectionActivity;
 import thelookcompany.lookcares.utils.UserUtils;
 
 public class BarCodeReaderFragment extends Fragment implements ZBarScannerView.ResultHandler {
@@ -75,13 +76,27 @@ public class BarCodeReaderFragment extends Fragment implements ZBarScannerView.R
     public void handleResult(Result rawResult) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Serial Number");
-        builder.setMessage(rawResult.getContents());
-        UserUtils.storeSelectedBarcode(getActivity(), rawResult.getContents());
+        final String serialNumber = rawResult.getContents();
+        builder.setMessage(serialNumber);
 
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Use this scan", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                //TODO
+                UserUtils.storeSelectedBarcode(getActivity(), serialNumber);
+                ((FrameSelectionActivity)getActivity()).getFrameWithSerialNumber(serialNumber);
+            }
+        });
+        builder.setNegativeButton("Rescan", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 //TODO
                 dialog.dismiss();
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mScannerView.resumeCameraPreview(BarCodeReaderFragment.this);
+                    }
+                }, 2000);
             }
         });
         AlertDialog dialog = builder.create();
@@ -93,13 +108,7 @@ public class BarCodeReaderFragment extends Fragment implements ZBarScannerView.R
         // * Wait 2 seconds to resume the preview.
         // * On older devices continuously stopping and resuming camera preview can result in freezing the app.
         // * I don't know why this is the case but I don't have the time to figure out.
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mScannerView.resumeCameraPreview(BarCodeReaderFragment.this);
-            }
-        }, 2000);
+
     }
 
     @Override

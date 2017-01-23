@@ -23,6 +23,7 @@ import org.json.JSONObject;
 
 import thelookcompany.lookcares.datamodel.UserObject;
 import thelookcompany.lookcares.fragments.BarCodeReaderFragment;
+import thelookcompany.lookcares.fragments.NFCReaderFragment;
 import thelookcompany.lookcares.fragments.TextInputFragment;
 import thelookcompany.lookcares.network.LookCaresResponseHandler;
 import thelookcompany.lookcares.utils.UserUtils;
@@ -38,6 +39,7 @@ public class FrameSelectionActivity extends AppCompatActivity {
     boolean installed;
         private JSONObject selectedFrame, selectedFabric;
     private String serialNumber;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +66,7 @@ public class FrameSelectionActivity extends AppCompatActivity {
             public void onClick(View view) {
                 status = 0;
                 updateTapButtons();
+
             }
         });
         btn_bar_code_frame = (Button) findViewById(R.id.btn_bar_code_frame);
@@ -72,8 +75,7 @@ public class FrameSelectionActivity extends AppCompatActivity {
             public void onClick(View view) {
                 status = 1;
                 updateTapButtons();
-                BarCodeReaderFragment fragment = new BarCodeReaderFragment();
-                replaceFragment(fragment);
+
             }
         });
         btn_text_input_frame = (Button) findViewById(R.id.btn_text_input_frame);
@@ -82,8 +84,7 @@ public class FrameSelectionActivity extends AppCompatActivity {
             public void onClick(View view) {
                 status = 2;
                 updateTapButtons();
-                TextInputFragment fragment = new TextInputFragment();
-                replaceFragment(fragment);
+
             }
         });
         btn_select_frame = (Button) findViewById(R.id.btn_select_frame);
@@ -113,7 +114,9 @@ public class FrameSelectionActivity extends AppCompatActivity {
 
             }
         });
+        updateTapButtons();
     }
+
     private void updateTapButtons() {
         if (status == 0)
         {
@@ -123,6 +126,8 @@ public class FrameSelectionActivity extends AppCompatActivity {
             btn_nfc_tap_frame.setBackgroundResource(R.drawable.tap_btn_back);
             btn_bar_code_frame.setBackgroundColor(Color.BLACK);
             btn_text_input_frame.setBackgroundColor(Color.BLACK);
+            NFCReaderFragment fragment = new NFCReaderFragment();
+            replaceFragment(fragment);
         }
         else if (status == 1)
         {
@@ -132,6 +137,8 @@ public class FrameSelectionActivity extends AppCompatActivity {
             btn_nfc_tap_frame.setBackgroundColor(Color.BLACK);
             btn_bar_code_frame.setBackgroundResource(R.drawable.tap_btn_back);
             btn_text_input_frame.setBackgroundColor(Color.BLACK);
+            BarCodeReaderFragment fragment = new BarCodeReaderFragment();
+            replaceFragment(fragment);
         }
         else if (status == 2)
         {
@@ -141,6 +148,8 @@ public class FrameSelectionActivity extends AppCompatActivity {
             btn_nfc_tap_frame.setBackgroundColor(Color.BLACK);
             btn_bar_code_frame.setBackgroundColor(Color.BLACK);
             btn_text_input_frame.setBackgroundResource(R.drawable.tap_btn_back);
+            TextInputFragment fragment = new TextInputFragment();
+            replaceFragment(fragment);
         }
     }
     private void replaceFragment (Fragment fragment) {
@@ -149,7 +158,7 @@ public class FrameSelectionActivity extends AppCompatActivity {
         mFragmentTransaction.replace(R.id.fragment_serial_number, fragment);
         mFragmentTransaction.commit();
     }
-    private void getFrameWithSerialNumber(String serialNumber) {
+    public void getFrameWithSerialNumber(String serialNumber) {
         RequestParams params = new RequestParams();
         UserObject user = UserUtils.getSession(this);
         String token = user.getToken();
@@ -162,18 +171,18 @@ public class FrameSelectionActivity extends AppCompatActivity {
         client.get(Utils.BASE_URL + "Frames/" + serialNumber, new LookCaresResponseHandler(this) {
             @Override
             public void onFailure(int statusCode, Header[] headers,	Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable,	errorResponse);
                 if (errorResponse == null) {
                     Toast.makeText(FrameSelectionActivity.this, "Please check your network status", Toast.LENGTH_LONG).show();
                 } else {
                     try {
-                        if (!errorResponse.isNull("error")) {
-                            String message = errorResponse.getString("message");
-                            Utils.showAlertWithTitleNoCancel(FrameSelectionActivity.this, "Warning", message);
-                        }
+                        String message = errorResponse.getString("message");
+                        Toast.makeText(FrameSelectionActivity.this, message, Toast.LENGTH_LONG).show();
                     } catch (JSONException e) {
                         Toast.makeText(FrameSelectionActivity.this, "Please check your network status", Toast.LENGTH_LONG).show();
                     }
+                }
+                if (status == 1) {
+                    updateTapButtons();
                 }
             }
             @Override
@@ -197,8 +206,17 @@ public class FrameSelectionActivity extends AppCompatActivity {
                             installed = true;
                         Intent intent;
                         if (installed) {
-                            intent = new Intent(FrameSelectionActivity.this, RemoveFabricActivity.class);
-                            startActivity(intent);
+                            String vcExtrusion = frame.getString("vcExtrusion");
+                            if (vcExtrusion.equals("120mm") || (vcExtrusion.equals("36mm")) || (vcExtrusion.equals("50mm")))
+                            {
+                                intent = new Intent(FrameSelectionActivity.this, RemoveFabricActivity.class);
+                                startActivity(intent);
+                            }
+                            else {
+                                intent = new Intent(FrameSelectionActivity.this, RemoveFabricSingleActivity.class);
+                                startActivity(intent);
+                            }
+
                         } else {
 
                             String vcExtrusion = frame.getString("vcExtrusion");
@@ -236,18 +254,18 @@ public class FrameSelectionActivity extends AppCompatActivity {
         client.get(Utils.BASE_URL + "Frames/Fabric/" + serialNumber, new LookCaresResponseHandler(this) {
             @Override
             public void onFailure(int statusCode, Header[] headers,	Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable,	errorResponse);
                 if (errorResponse == null) {
                     Toast.makeText(FrameSelectionActivity.this, "Please check your network status", Toast.LENGTH_LONG).show();
                 } else {
                     try {
-                        if (!errorResponse.isNull("error")) {
-                            String message = errorResponse.getString("message");
-                            Utils.showAlertWithTitleNoCancel(FrameSelectionActivity.this, "Warning", message);
-                        }
+                        String message = errorResponse.getString("message");
+                        Toast.makeText(FrameSelectionActivity.this, message, Toast.LENGTH_LONG).show();
                     } catch (JSONException e) {
                         Toast.makeText(FrameSelectionActivity.this, "Please check your network status", Toast.LENGTH_LONG).show();
                     }
+                }
+                if (status == 1) {
+                    updateTapButtons();
                 }
             }
             @Override
