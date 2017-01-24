@@ -56,7 +56,7 @@ public class TakePictureActivity extends AppCompatActivity {
         btn_done_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (img_photo != null) {
+                if (photoBMP != null) {
                     postImageToServer();
                 }
                 showAlertForMakeMorechanges();
@@ -144,22 +144,21 @@ public class TakePictureActivity extends AppCompatActivity {
     }
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-        switch(requestCode) {
+        switch (requestCode) {
             case 0:
-                if(resultCode == RESULT_OK){
-                    Uri selectedImage = imageReturnedIntent.getData();
-                    mPicUri = selectedImage;
-                    img_photo.setImageURI(selectedImage);
+                if (resultCode == RESULT_OK) {
                     try {
-                        photoBMP = BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImage));
-                    } catch (FileNotFoundException e) {
+                        photoBMP = (Bitmap) imageReturnedIntent.getExtras().get("data");
+                        //captured image set in imageview
+                        img_photo.setImageBitmap(photoBMP);
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
 
                 break;
             case 1:
-                if(resultCode == RESULT_OK){
+                if (resultCode == RESULT_OK) {
                     Uri selectedImage = imageReturnedIntent.getData();
                     mPicUri = selectedImage;
                     img_photo.setImageURI(selectedImage);
@@ -171,29 +170,5 @@ public class TakePictureActivity extends AppCompatActivity {
                 }
                 break;
         }
-    }
-
-    protected void onResume()
-    {
-        mBitmap = null;
-        try
-        {
-            mBitmap = Bitmap.createBitmap(MediaStore.Images.Media.getBitmap(this.getContentResolver(), mPicUri));
-        }
-        catch(Exception e)
-        {}
-
-        img_photo.setImageBitmap(mBitmap);
-        img_photo.setAdjustViewBounds(true);
-        img_photo.invalidate();
-
-        super.onResume();
-    }
-
-
-    protected void onPause()
-    {
-        mBitmap.recycle();
-        img_photo.setImageBitmap(null);  //in my Edit class
     }
 }

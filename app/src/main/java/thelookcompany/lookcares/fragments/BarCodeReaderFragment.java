@@ -83,7 +83,10 @@ public class BarCodeReaderFragment extends Fragment implements ZBarScannerView.R
             public void onClick(DialogInterface dialog, int id) {
                 //TODO
                 UserUtils.storeSelectedBarcode(getActivity(), serialNumber);
-                ((FrameSelectionActivity)getActivity()).getFrameWithSerialNumber(serialNumber);
+                if (((FrameSelectionActivity)getActivity()).value.equals("FRAME"))
+                    ((FrameSelectionActivity)getActivity()).getFrameWithSerialNumber(serialNumber);
+                else if (((FrameSelectionActivity)getActivity()).value.equals("FABRIC"))
+                    ((FrameSelectionActivity)getActivity()).getFabricWithSerialNumber(serialNumber);
             }
         });
         builder.setNegativeButton("Rescan", new DialogInterface.OnClickListener() {

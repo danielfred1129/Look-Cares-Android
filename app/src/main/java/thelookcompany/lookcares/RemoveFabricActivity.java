@@ -12,7 +12,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.loopj.android.http.AsyncHttpClient;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -103,7 +102,7 @@ public class RemoveFabricActivity extends AppCompatActivity {
                 fabricKey1 = fabric1.getString("kFabric");
                 img_url = "http://files.lookcares.com/files/" + img_url;
                 final DisplayImageOptions options = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
-                ImageLoader.getInstance().displayImage(img_url, img_fabric1, options);
+                Glide.with(this).load(img_url).into(img_fabric2);
             }
             else if (fabrics.length() == 2)
             {
@@ -118,8 +117,8 @@ public class RemoveFabricActivity extends AppCompatActivity {
 
                 JSONObject fabric2 = fabrics.getJSONObject(1);
                 String img_url2 = fabric2.getString("vcFileName");
-                fabricKey2 = fabric2.getString("kFabric");
                 img_url2 = "http://files.lookcares.com/files/" + img_url2;
+                fabricKey2 = fabric2.getString("kFabric");
 //                ImageLoader.getInstance().displayImage(img_url2, img_fabric2, options);
                 Glide.with(this).load(img_url2).into(img_fabric2);
             }

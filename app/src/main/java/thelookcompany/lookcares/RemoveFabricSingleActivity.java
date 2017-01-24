@@ -9,9 +9,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.loopj.android.http.AsyncHttpClient;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -66,7 +66,7 @@ public class RemoveFabricSingleActivity extends AppCompatActivity {
             fabricKey1 = fabric1.getString("kFabric");
             img_url = "http://files.lookcares.com/files/" + img_url;
             final DisplayImageOptions options = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
-            ImageLoader.getInstance().displayImage(img_url, img_fabric1, options);
+            Glide.with(this).load(img_url).into(img_fabric1);
         } catch (JSONException e) {
             e.printStackTrace();
         }

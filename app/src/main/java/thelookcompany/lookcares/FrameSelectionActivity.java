@@ -33,7 +33,7 @@ import thelookcompany.lookcares.utils.Utils;
 public class FrameSelectionActivity extends AppCompatActivity {
 
     private Button btn_nfc_tap_frame, btn_bar_code_frame, btn_text_input_frame, btn_select_frame;
-    String value;
+    public String value;
     int frame_size;
     int status = 0;
     boolean installed;
@@ -241,7 +241,7 @@ public class FrameSelectionActivity extends AppCompatActivity {
             }
         });
     }
-    private void getFabricWithSerialNumber(final String serialNumber) {
+    public void getFabricWithSerialNumber(final String serialNumber) {
         RequestParams params = new RequestParams();
         UserObject user = UserUtils.getSession(this);
         String token = user.getToken();
@@ -328,11 +328,11 @@ public class FrameSelectionActivity extends AppCompatActivity {
 
                                 if (response != null) {
                                     Toast.makeText(FrameSelectionActivity.this, "Fabric is added successfully!", Toast.LENGTH_LONG).show();
-                                    Bundle extras = getIntent().getExtras();
-                                    if (extras != null) {
-                                        frame_size = extras.getInt("FRAME_SIZE");
-                                        //The key argument here must match that used in the other activity
-                                    }
+//                                    Bundle extras = getIntent().getExtras();
+//                                    if (extras != null) {
+//                                        frame_size = extras.getInt("FRAME_SIZE");
+//                                        //The key argument here must match that used in the other activity
+//                                    }
                                     Intent intent;
                                     if (frame_size == 2) {
                                         intent = new Intent(FrameSelectionActivity.this, FrameSelectionActivity.class);

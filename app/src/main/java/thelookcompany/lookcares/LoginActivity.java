@@ -65,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         String str_remember = UserUtils.getRememberMe(LoginActivity.this);
-        if (str_remember != null) {
+        if (str_remember.equals("yes")) {
             btn_rememberme.setImageResource(R.drawable.checkbox);
             onLogin();
         }
