@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import thelookcompany.lookcares.R;
 
@@ -58,7 +57,7 @@ public class TextInputFragment extends Fragment {
         //Frame Serial Number  : installed : SN09231600100, SN09231600101, uninstalled: SN09231600102
         //Fabric Serial Number : installed : SN10031600017, uninstalled: SN10031600018
         rootView = inflater.inflate(R.layout.fragment_text_input, container, false);
-        ((EditText) rootView.findViewById(R.id.txt_input_serial_number)).setText("SN09231600102");
+//        ((EditText) rootView.findViewById(R.id.txt_input_serial_number)).setText("SN09231600102");
         return rootView;
     }
 

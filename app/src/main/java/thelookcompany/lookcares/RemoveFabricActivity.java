@@ -63,33 +63,37 @@ public class RemoveFabricActivity extends AppCompatActivity {
         btn_remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (fabrics.length() == 2 && status_Fabric2 == true &&  status_Fabric1 == true)
-                {
-                    stage_status = 2;
-                    //Delete first fabric
+            if (fabrics.length() == 2 && status_Fabric2 == true &&  status_Fabric1 == true) {
+                stage_status = 2;
+                //Delete first fabric
+                if (fabricKey1 != null && fabricKey2 != null)
+                    deleteFabric(fabricKey1, fabricKey2);
+            }
+            else if (fabrics.length() == 2 && status_Fabric1 == true)
+            {
+                stage_status = 1;
+                //Delete first fabric
+                if (fabricKey1!=null)
+                   deleteFabric(fabricKey1);
+            }
+            else if (fabrics.length() == 2 && status_Fabric2 == true )
+            {
+                stage_status = 1;
+                //Delete first fabric
+                if (fabricKey2!=null)
                     deleteFabric(fabricKey2);
-                }
-                else if (fabrics.length() == 2 && status_Fabric1 == true)
-                {
-                    stage_status = 1;
-                    //Delete first fabric
-                    deleteFabric(fabricKey1);
-                }
-                else if (fabrics.length() == 2 && status_Fabric2 == true )
-                {
-                    stage_status = 1;
-                    //Delete first fabric
-                    deleteFabric(fabricKey2);
-                }
-                else if (status_Fabric1) {
+            }
+            else if (status_Fabric1) {
 
-                    stage_status = 1;
+                stage_status = 2;
+                if (fabricKey1!=null)
                     deleteFabric(fabricKey1);
-                }
-                else if (status_Fabric2) {
-                    stage_status = 1;
-                    deleteFabric(fabricKey2);
-                }
+            }
+            else if (status_Fabric2) {
+                stage_status = 2;
+                if (fabricKey1!=null)
+                    deleteFabric(fabricKey1);
+            }
             }
         });
         try {
@@ -152,11 +156,32 @@ public class RemoveFabricActivity extends AppCompatActivity {
             }
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                super.onSuccess(statusCode, headers, response);
-                if (fabrics.length() == 2)
-                    Toast.makeText(RemoveFabricActivity.this, "The fabrics removed successfully!", Toast.LENGTH_LONG).show();
+                Toast.makeText(RemoveFabricActivity.this, "The fabric removed successfully!", Toast.LENGTH_LONG).show();
+                toNextActivity();
+            }
+        });
+    }
+    private void deleteFabric(String fabricKey1, final String fabricKey2) {
+        UserObject user = UserUtils.getSession(RemoveFabricActivity.this);
+        String token = user.getToken();
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        String authorization = "base " + token;
+        client.addHeader("Authorization", authorization);
+        client.addHeader("Content-Type", "application/json");
+        client.addHeader("Accept", "application/json");
+        client.delete(Utils.BASE_URL + "Frames/Fabric/" + fabricKey1, new LookCaresResponseHandler(RemoveFabricActivity.this) {
+            @Override
+            public void onFailure(int statusCode, Header[] headers,	String responseString, Throwable throwable) {
+                if (statusCode == 200) {
+                    deleteFabric(fabricKey2);
+                }
                 else
-                    Toast.makeText(RemoveFabricActivity.this, "The fabric removed successfully!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(RemoveFabricActivity.this, "Please check your network status", Toast.LENGTH_LONG).show();
+            }
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Toast.makeText(RemoveFabricActivity.this, "The first fabric removed successfully!", Toast.LENGTH_LONG).show();
                 toNextActivity();
             }
         });
@@ -167,20 +192,10 @@ public class RemoveFabricActivity extends AppCompatActivity {
         try {
             frame = new JSONObject(UserUtils.getSelectedFrame(RemoveFabricActivity.this));
             String vcExtrusion = frame.getString("vcExtrusion");
-            if (vcExtrusion.equals("120mm") || (vcExtrusion.equals("36mm")) || (vcExtrusion.equals("50mm")))
-            {
-                intent = new Intent(RemoveFabricActivity.this, FrameSelectionActivity.class);
-                intent.putExtra("SERIAL_NUMBER_SELECTION_TYPE", "FABRIC");
-                intent.putExtra("FRAME_SIZE", stage_status);
-                startActivity(intent);
-            }
-            else
-            {
-                intent = new Intent(RemoveFabricActivity.this, FrameSelectionActivity.class);
-                intent.putExtra("SERIAL_NUMBER_SELECTION_TYPE", "FABRIC");
-                intent.putExtra("FRAME_SIZE", 1);
-                startActivity(intent);
-            }
+            intent = new Intent(RemoveFabricActivity.this, FrameSelectionActivity.class);
+            intent.putExtra("SERIAL_NUMBER_SELECTION_TYPE", "FABRIC");
+            intent.putExtra("FRAME_SIZE", stage_status);
+            startActivity(intent);
         } catch (JSONException e) {
             e.printStackTrace();
         }

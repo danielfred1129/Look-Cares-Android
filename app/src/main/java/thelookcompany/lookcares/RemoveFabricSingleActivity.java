@@ -106,20 +106,10 @@ public class RemoveFabricSingleActivity extends AppCompatActivity {
         try {
             frame = new JSONObject(UserUtils.getSelectedFrame(RemoveFabricSingleActivity.this));
             String vcExtrusion = frame.getString("vcExtrusion");
-            if (vcExtrusion.equals("120mm") || (vcExtrusion.equals("36mm")) || (vcExtrusion.equals("50mm")))
-            {
-                intent = new Intent(RemoveFabricSingleActivity.this, FrameSelectionActivity.class);
-                intent.putExtra("SERIAL_NUMBER_SELECTION_TYPE", "FABRIC");
-                intent.putExtra("FRAME_SIZE", stage_status);
-                startActivity(intent);
-            }
-            else
-            {
-                intent = new Intent(RemoveFabricSingleActivity.this, FrameSelectionActivity.class);
-                intent.putExtra("SERIAL_NUMBER_SELECTION_TYPE", "FABRIC");
-                intent.putExtra("FRAME_SIZE", 1);
-                startActivity(intent);
-            }
+            intent = new Intent(RemoveFabricSingleActivity.this, FrameSelectionActivity.class);
+            intent.putExtra("SERIAL_NUMBER_SELECTION_TYPE", "FABRIC");
+            intent.putExtra("FRAME_SIZE", 1);
+            startActivity(intent);
         } catch (JSONException e) {
             e.printStackTrace();
         }
