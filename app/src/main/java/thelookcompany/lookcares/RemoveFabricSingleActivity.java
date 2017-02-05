@@ -64,7 +64,7 @@ public class RemoveFabricSingleActivity extends AppCompatActivity {
             JSONObject fabric1 = fabrics.getJSONObject(0);
             String img_url = fabric1.getString("vcFileName");
             fabricKey1 = fabric1.getString("kFabric");
-            img_url = "http://files.lookcares.com/files/" + img_url;
+            img_url = Utils.FILE_SERVER_URL + img_url;
             final DisplayImageOptions options = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
             Glide.with(this).load(img_url).into(img_fabric1);
         } catch (JSONException e) {

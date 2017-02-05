@@ -32,7 +32,9 @@ public class Utils {
 	public static String GYM_PLACE_URL = "https://maps.googleapis.com/maps/api/place/textsearch/json?key=AIzaSyDR-3g9gQvYcZM7uVJiUPazVjNIIBq8RZE&types=gym&query=gyms+in+";
     //public static String GYM_NEAR_ME = "https://maps.googleapis.com/maps/api/place/search/json?radius=50000&types=gym&sensor=false&key=AIzaSyDR-3g9gQvYcZM7uVJiUPazVjNIIBq8RZE&location=";
 //	public static String BASE_URL = "http://192.168.0.82:56789/api/";
+//	public static String FILE_SERVER_URL = "";
 	public static String BASE_URL = "http://tlcapi-proddeployment.azurewebsites.net/api/";
+	public static String FILE_SERVER_URL = "http://files.lookcares.com/files/";
 
 	/**
 	 * get screen width for all resolutions

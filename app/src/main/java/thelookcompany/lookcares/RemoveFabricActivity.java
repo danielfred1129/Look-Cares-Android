@@ -104,7 +104,7 @@ public class RemoveFabricActivity extends AppCompatActivity {
                 JSONObject fabric1 = fabrics.getJSONObject(0);
                 String img_url = fabric1.getString("vcFileName");
                 fabricKey1 = fabric1.getString("kFabric");
-                img_url = "http://files.lookcares.com/files/" + img_url;
+                img_url = Utils.FILE_SERVER_URL + img_url;
                 final DisplayImageOptions options = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
                 Glide.with(this).load(img_url).into(img_fabric2);
             }
@@ -114,14 +114,14 @@ public class RemoveFabricActivity extends AppCompatActivity {
 
                 JSONObject fabric1 = fabrics.getJSONObject(0);
                 String img_url = fabric1.getString("vcFileName");
-                img_url = "http://files.lookcares.com/files/" + img_url;
+                img_url = Utils.FILE_SERVER_URL + img_url;
                 fabricKey1 = fabric1.getString("kFabric");
 //                ImageLoader.getInstance().displayImage(img_url, img_fabric1, options);
                 Glide.with(this).load(img_url).into(img_fabric1);
 
                 JSONObject fabric2 = fabrics.getJSONObject(1);
                 String img_url2 = fabric2.getString("vcFileName");
-                img_url2 = "http://files.lookcares.com/files/" + img_url2;
+                img_url2 = Utils.FILE_SERVER_URL + img_url2;
                 fabricKey2 = fabric2.getString("kFabric");
 //                ImageLoader.getInstance().displayImage(img_url2, img_fabric2, options);
                 Glide.with(this).load(img_url2).into(img_fabric2);
