@@ -37,8 +37,9 @@ public class FrameSelectionActivity extends AppCompatActivity {
     int frame_size;
     int status = 0;
     boolean installed;
-        private JSONObject selectedFrame, selectedFabric;
+    private JSONObject selectedFrame, selectedFabric;
     private String serialNumber;
+    Fragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +118,16 @@ public class FrameSelectionActivity extends AppCompatActivity {
         updateTapButtons();
     }
 
+    @Override
+    public void onNewIntent(Intent intent) {
+//        resolveIntent(intent);
+//        mLogger.pushStatus("onNewIntent");
+        if (fragment instanceof NFCReaderFragment) {
+            NFCReaderFragment myFragement = (NFCReaderFragment) fragment;
+            // Pass intent or its data to the fragment's method
+            myFragement.resolveIntent(intent);
+        }
+    }
     private void updateTapButtons() {
         if (status == 0)
         {
@@ -126,7 +137,7 @@ public class FrameSelectionActivity extends AppCompatActivity {
             btn_nfc_tap_frame.setBackgroundResource(R.drawable.tap_btn_back);
             btn_bar_code_frame.setBackgroundColor(Color.BLACK);
             btn_text_input_frame.setBackgroundColor(Color.BLACK);
-            NFCReaderFragment fragment = new NFCReaderFragment();
+            fragment = new NFCReaderFragment();
             replaceFragment(fragment);
         }
         else if (status == 1)
@@ -137,7 +148,7 @@ public class FrameSelectionActivity extends AppCompatActivity {
             btn_nfc_tap_frame.setBackgroundColor(Color.BLACK);
             btn_bar_code_frame.setBackgroundResource(R.drawable.tap_btn_back);
             btn_text_input_frame.setBackgroundColor(Color.BLACK);
-            BarCodeReaderFragment fragment = new BarCodeReaderFragment();
+            fragment = new BarCodeReaderFragment();
             replaceFragment(fragment);
         }
         else if (status == 2)
@@ -148,7 +159,7 @@ public class FrameSelectionActivity extends AppCompatActivity {
             btn_nfc_tap_frame.setBackgroundColor(Color.BLACK);
             btn_bar_code_frame.setBackgroundColor(Color.BLACK);
             btn_text_input_frame.setBackgroundResource(R.drawable.tap_btn_back);
-            TextInputFragment fragment = new TextInputFragment();
+            fragment = new TextInputFragment();
             replaceFragment(fragment);
         }
     }

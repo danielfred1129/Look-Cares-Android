@@ -21,10 +21,6 @@ import java.util.Map;
 import java.util.Vector;
 
 import thelookcompany.lookcares.R;
-import thelookcompany.lookcares.nfc_handlers.nfc_handlers.IHandler;
-import thelookcompany.lookcares.nfc_handlers.nfc_handlers.IHandlerFactory;
-import thelookcompany.lookcares.nfc_handlers.nfc_handlers.MifareClassicFactory;
-import thelookcompany.lookcares.nfc_handlers.nfc_handlers.NfcAFactory;
 
 public class NfcHandler {
 
@@ -45,8 +41,6 @@ public class NfcHandler {
 	private Map<String, IHandlerFactory> mFactoryMap = null;
 
 	private TagInfo mTagInfo = null;
-
-	public String tagInfo = null;
 
 	private List<ITagHandleListener> mListeners = null;
 
@@ -83,8 +77,8 @@ public class NfcHandler {
 		mFactoryMap = new HashMap<String, IHandlerFactory>();
 		mFactoryMap.put("android.nfc.tech.MifareClassic",
 				new MifareClassicFactory(mLogger, mStatus));
-		mFactoryMap.put("android.nfc.tech.NfcA", new NfcAFactory(mLogger,
-				mStatus));
+//		mFactoryMap.put("android.nfc.tech.NfcA", new NfcAFactory(mLogger,
+//				mStatus));
 
 		mListeners = new Vector<ITagHandleListener>();
 	}
@@ -106,16 +100,7 @@ public class NfcHandler {
 		mStatus.setStatus("Handling tag...");
 
 		Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-
-		tagInfo = tag.toString() + "\n";
-
-		tagInfo += "\nTag Id: \n";
 		byte[] tagId = tag.getId();
-		tagInfo += "length = " + tagId.length +"\n";
-		for(int i=0; i<tagId.length; i++){
-			tagInfo += Integer.toHexString(tagId[i] & 0xFF) + " ";
-		}
-		tagInfo += "\n";
 
 		mTagInfo = new TagInfo(tag.getTechList());
 
@@ -124,7 +109,7 @@ public class NfcHandler {
 
 			if (mFactoryMap.containsKey(tech)) {
 				IHandler handler = mFactoryMap.get(tech).createHandler();
-				handler.handleTag(tag);
+				handler.handleTag(mActivity, tag);
 			}
 		}
 

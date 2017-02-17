@@ -2,6 +2,7 @@ package thelookcompany.lookcares.nfc_handlers;
 
 import java.util.List;
 import java.util.Vector;
+import com.bugfender.sdk.Bugfender;
 
 public class Logger {
 	
@@ -20,8 +21,10 @@ public class Logger {
 	
     public void pushStatus(final String text) {
     	mText += "\n" + text;
-    	
-    	for(ILoggerListener l : mListeners) {
+
+		Bugfender.sendIssue("Log", text);
+
+		for(ILoggerListener l : mListeners) {
     		l.update(mText);
     	}
     }

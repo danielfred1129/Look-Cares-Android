@@ -25,6 +25,8 @@ import thelookcompany.lookcares.network.LookCaresResponseHandler;
 import thelookcompany.lookcares.utils.UserUtils;
 import thelookcompany.lookcares.utils.Utils;
 
+import com.bugfender.sdk.Bugfender;
+
 public class LoginActivity extends AppCompatActivity {
 
     private EditText txt_username, txt_password;
@@ -70,6 +72,11 @@ public class LoginActivity extends AppCompatActivity {
             onLogin();
         }
         initImageLoader();
+
+        Bugfender.init(this, "nALVxYHcNYyN31etxNbeZHc9nUoueIco", BuildConfig.DEBUG);
+        Bugfender.enableLogcatLogging();
+        Bugfender.enableUIEventLogging(this.getApplication());
+
     }
     @Override
     public void onBackPressed() {
@@ -99,9 +106,9 @@ public class LoginActivity extends AppCompatActivity {
         params.put("username", txt_username.getText().toString());
         params.put("password", txt_password.getText().toString());
 
-//        params.put("username", "installer");
-//        params.put("password", "installer!");
-
+//        params.put("username", "installer1");
+//        params.put("password", "installer1");
+//
         AsyncHttpClient client = new AsyncHttpClient();
         client.post(Utils.BASE_URL + "Auth/Login", params, new LookCaresResponseHandler(this) {
 
