@@ -73,16 +73,13 @@ public class MifareClassicHandler extends Handler {
 					String blockData = Common.getHexString(data);
 					mLogger.pushStatus("Block " + block + " data: " + blockData);
 
-                    if (data.length > 0) {
+                    if ((data.length > 0) && (serialKey == null)) {
                         serialKey = blockData;
-                        break;
                     }
                 }
-
-                if (serialKey != null) {
-					handleResult(activity, serialKey);
-					break;
-				}
+			}
+			if (serialKey != null) {
+				handleResult(activity, serialKey);
 			}
 
 			mfc.close();
