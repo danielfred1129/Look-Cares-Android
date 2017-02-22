@@ -6,6 +6,8 @@ import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
+import android.content.res.XmlResourceParser;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -21,7 +23,12 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import thelookcompany.lookcares.FrameSelectionActivity;
@@ -39,12 +46,14 @@ public class NFCReaderFragment extends Fragment {
     public static final String TAG = "LookCares";
 
     private NfcAdapter mNfcAdapter = null;
+    private PendingIntent pendingIntent = null;
+    private IntentFilter[] filters = null;
+    private String[][] techList = null;
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
-    private NfcAdapter nfcAdapter;
 
     private View rootView;
     private ImageButton btn_nfc_reader;
@@ -79,7 +88,6 @@ public class NFCReaderFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        Activity activity = getActivity();
         mNfcAdapter = NfcAdapter.getDefaultAdapter(getActivity());
 
         if (mNfcAdapter == null) {
@@ -91,6 +99,7 @@ public class NFCReaderFragment extends Fragment {
         if (!mNfcAdapter.isEnabled()) {
             Toast.makeText(getActivity(), "NFC is disabled.", Toast.LENGTH_LONG).show();
         }
+        setupForegroundDispatch();
 
         handleIntent(getActivity().getIntent());
     }
@@ -115,14 +124,14 @@ public class NFCReaderFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        setupForegroundDispatch(getActivity(), mNfcAdapter);
+        mNfcAdapter.enableForegroundDispatch(getActivity(), pendingIntent, filters, techList);
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        stopForegroundDispatch(getActivity(), mNfcAdapter);
+        mNfcAdapter.disableForegroundDispatch(getActivity());
     }
 
     @Override
@@ -183,14 +192,14 @@ public class NFCReaderFragment extends Fragment {
      * @param activity The corresponding {@link Activity} requesting the foreground dispatch.
      * @param adapter The {@link NfcAdapter} used for the foreground dispatch.
      */
-    public static void setupForegroundDispatch(final Activity activity, NfcAdapter adapter) {
-        final Intent intent = new Intent(activity.getApplicationContext(), activity.getClass());
+    public void setupForegroundDispatch() {
+        final Intent intent = new Intent(getActivity().getApplicationContext(), getActivity().getClass());
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-        final PendingIntent pendingIntent = PendingIntent.getActivity(activity.getApplicationContext(), 0, intent, 0);
+        pendingIntent = PendingIntent.getActivity(getActivity().getApplicationContext(), 0, intent, 0);
 
-        IntentFilter[] filters = new IntentFilter[1];
-        String[][] techList = new String[][]{};
+        filters = new IntentFilter[1];
+        techList = new String[][] { getTechList(getActivity().getResources()) };
 
         // Notice that this is the same filter as in our manifest.
         filters[0] = new IntentFilter();
@@ -201,17 +210,6 @@ public class NFCReaderFragment extends Fragment {
         } catch (IntentFilter.MalformedMimeTypeException e) {
             throw new RuntimeException("Check your mime type.");
         }
-
-        adapter.enableForegroundDispatch(activity, pendingIntent, filters, techList);
-    }
-
-
-    /*
-     * @param activity The corresponding {@linkBaseActivity} requesting to stop the foreground dispatch.
-     * @param adapter The {@link NfcAdapter} used for the foreground dispatch.
-     */
-    public static void stopForegroundDispatch(final Activity activity, NfcAdapter adapter) {
-        adapter.disableForegroundDispatch(activity);
     }
 
     /**
@@ -304,7 +302,34 @@ public class NFCReaderFragment extends Fragment {
                 Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
             }
         }
+    }
 
+    private static String[] getTechList(Resources resources) {
+        ArrayList<String> list = new ArrayList<String>();
+        XmlResourceParser xml = resources.getXml(R.xml.techlist);
 
+        // Assumed simple parsing because of simple file structure
+        for (;;) {
+            int eventType = XmlPullParser.END_DOCUMENT;
+            try {
+                eventType = xml.next();
+            } catch (XmlPullParserException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+            if (eventType == XmlPullParser.TEXT) {
+                list.add(xml.getText());
+            } else if (eventType == XmlPullParser.END_DOCUMENT) {
+                break;
+            }
+
+        }
+
+        return list.toArray(new String[list.size()]);
     }
 }
+
